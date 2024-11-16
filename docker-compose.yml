@@ -1,0 +1,35 @@
+name: co-vibe
+
+services:
+  api:
+    container_name: server
+    build:
+      context: ./apps/app-back
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    networks:
+      - covibe
+    volumes:
+      - ./apps/app-back:/usr/src/app
+  db:
+    image: postgres:16.0-alpine
+    environment:
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE}
+    ports:
+      - "${PGPORT}:5432"
+    networks:
+      - covibe
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
+networks:
+  covibe:
+    driver: bridge
