@@ -29,8 +29,42 @@ enum Level {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  password String
-  name     String?
+  id         String      @id @default(cuid())
+  name       String
+  email      String      @unique
+  password   String      // This will store the hashed password
+  households Household[] @relation("HouseholdMembers")
+}
+
+model Household {
+  id        String    @id @default(cuid())
+  name      String
+  members   User[]    @relation("HouseholdMembers")
+  groceries Grocery[]
+}
+
+model Grocery {
+  id                String        @id @default(cuid())
+  name              String
+  category          String // e.g., "food", "cleaning supplies", etc.
+  purchaseFrequency Frequency
+  priceRecords      PriceRecord[]
+  notes             String? // Any specific notes (brand preferences, etc.)
+  householdId       String
+  household         Household     @relation(fields: [householdId], references: [id])
+}
+
+model PriceRecord {
+  id        String   @id @default(cuid())
+  groceryId String
+  grocery   Grocery  @relation(fields: [groceryId], references: [id])
+  price     Float // Price in your chosen currency
+  date      DateTime // When the price was updated
+  source    String // e.g., "website scraping", "receipt", etc.
+}
+
+enum Frequency {
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
 }
