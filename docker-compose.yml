@@ -1,19 +1,7 @@
 name: co-vibe
 
 services:
-  api:
-    container_name: server
-    build:
-      context: ./apps/app-back
-      dockerfile: ./Dockerfile
-    env_file:
-      - .env
-    ports:
-      - "3000:3000"
-    networks:
-      - covibe
-    volumes:
-      - ./apps/app-back:/usr/src/app
+
   db:
     image: postgres:16.0-alpine
     environment:

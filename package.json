@@ -1,0 +1,22 @@
+{
+  "name": "covibe",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm run --parallel dev",
+    "build": "pnpm run --parallel build",
+    "start": "pnpm run --parallel start",
+    "lint": "eslint \"{packages,apps}/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --write \"{packages,apps}/**/*.{ts,tsx,json,md}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "@types/eslint": "^9.6.1",
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
+    "@typescript-eslint/parser": "^8.16.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0"
+  }
+}
