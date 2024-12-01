@@ -1,13 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["deno"]
-  output          = "../generated/client"
+  provider = "prisma-client-js"
+  output   = "../generated/client"
 }
 
 datasource db {
@@ -22,45 +15,45 @@ model Log {
   meta    Json
 }
 
-enum Level {
-  Info
-  Warn
-  Error
-}
-
 model User {
   id         String      @id @default(cuid())
-  name       String
   email      String      @unique
-  password   String      // This will store the hashed password
+  password   String
+  name       String
   households Household[] @relation("HouseholdMembers")
 }
 
 model Household {
   id        String    @id @default(cuid())
   name      String
-  members   User[]    @relation("HouseholdMembers")
   groceries Grocery[]
+  members   User[]    @relation("HouseholdMembers")
 }
 
 model Grocery {
   id                String        @id @default(cuid())
   name              String
-  category          String // e.g., "food", "cleaning supplies", etc.
+  category          String
   purchaseFrequency Frequency
-  priceRecords      PriceRecord[]
-  notes             String? // Any specific notes (brand preferences, etc.)
   householdId       String
   household         Household     @relation(fields: [householdId], references: [id])
+  priceRecords      PriceRecord[]
+  link              String?
 }
 
 model PriceRecord {
   id        String   @id @default(cuid())
   groceryId String
+  price     Float
+  date      DateTime @default(now())
+  store     String?
   grocery   Grocery  @relation(fields: [groceryId], references: [id])
-  price     Float // Price in your chosen currency
-  date      DateTime // When the price was updated
-  source    String // e.g., "website scraping", "receipt", etc.
+}
+
+enum Level {
+  Info
+  Warn
+  Error
 }
 
 enum Frequency {
