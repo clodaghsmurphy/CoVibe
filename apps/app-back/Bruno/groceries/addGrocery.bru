@@ -1,0 +1,21 @@
+meta {
+  name: addGrocery
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{BASE_URL}}/groceries
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Milk",
+    "category": "Dairy",
+    "purchaseFrequency": "MONTHLY",
+    "householdId": "8c698634-d2f9-4d04-b439-c370a93bf48c",
+    "link": "optional-link"
+  }
+}
