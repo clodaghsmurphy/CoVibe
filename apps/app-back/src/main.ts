@@ -4,7 +4,12 @@ import { AppModule } from "./app.module"
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  app.enableCors()
+  app.enableCors({
+    origin: ["http://localhost:5137", "http://192.168.0.170:5137"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  })
   const PORT = process.env.PORT || 3000
   const openApiConfig = new DocumentBuilder()
     .setTitle("CoVibe")

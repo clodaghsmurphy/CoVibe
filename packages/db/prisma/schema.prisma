@@ -23,21 +23,23 @@ model User {
 }
 
 model Household {
-  id        String    @id @default(cuid())
-  name      String
-  groceries Grocery[]
-  members   User[]    @relation("HouseholdMembers")
+  id           String         @id @default(cuid())
+  name         String
+  groceries    Grocery[]
+  members      User[]         @relation("HouseholdMembers")
+  ShoppingList ShoppingList[]
 }
 
 model Grocery {
-  id                String        @id @default(cuid())
+  id                String             @id @default(cuid())
   name              String
   category          String
   purchaseFrequency Frequency
   householdId       String
-  household         Household     @relation(fields: [householdId], references: [id])
+  household         Household          @relation(fields: [householdId], references: [id])
   priceRecords      PriceRecord[]
   link              String?
+  ShoppingListItem  ShoppingListItem[]
 }
 
 model PriceRecord {
@@ -59,4 +61,23 @@ enum Frequency {
   MONTHLY
   QUARTERLY
   ANNUALLY
+}
+
+model ShoppingList {
+  id          String             @id @default(cuid())
+  month       DateTime // The month this shopping list corresponds to
+  householdId String
+  household   Household          @relation(fields: [householdId], references: [id])
+  items       ShoppingListItem[]
+  createdAt   DateTime           @default(now())
+}
+
+model ShoppingListItem {
+  id             String       @id @default(cuid())
+  shoppingListId String
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id])
+  groceryId      String
+  grocery        Grocery      @relation(fields: [groceryId], references: [id])
+  quantity       Int // Number of this grocery item to buy
+  notes          String? // Optional notes for the item
 }
