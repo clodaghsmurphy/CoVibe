@@ -2,8 +2,11 @@
   "name": "covibe",
   "private": true,
   "scripts": {
-    "dev": "pnpm run --parallel dev",
-    "build": "pnpm run --parallel build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "apps:dev": "pnpm run docker:up && pnpm run --filter \"./apps/**\" dev",
+    "apps:build": "pnpm run --filter \"./apps/**\" build",
+    "apps:lint": "pnpm run --filter \"./apps/**\" lint",
     "start": "pnpm run --parallel start",
     "lint": "eslint \"{packages,apps}/**/*.{ts,tsx}\" --fix",
     "format": "prettier --write \"{packages,apps}/**/*.{ts,tsx,json,md}\""
