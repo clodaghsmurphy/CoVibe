@@ -3,6 +3,7 @@ import { GroceryService } from "./grocery.service"
 import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger"
 import { AddToShoppingListDto, DeleteShoppingListItemDto, UpdateShoppingListItemQuantityDto } from "./grocery.dto"
 import { CreateGroceryDto } from "./grocery.dto"
+import { Frequency } from "@covibe/db"
 
 @ApiTags("groceries")
 @Controller("groceries")
@@ -13,7 +14,6 @@ export class GroceryController {
   @ApiOperation({ summary: "Get all groceries for a household" })
   @ApiParam({ name: "householdId", required: true, description: "ID of the household" })
   async findAll(@Param("householdId") householdId: string): Promise<GroceryWithPrice[]> {
-    console.log("findAll", householdId)
     const groceries = await this.groceryService.findAll(householdId)
     return groceries.map((grocery) => {
       const currentPriceRecord = grocery.priceRecords?.[0] || null
@@ -113,7 +113,7 @@ export interface GroceryWithPrice {
   id: string
   name: string
   category: string
-  purchaseFrequency: string
+  purchaseFrequency: keyof typeof Frequency
   householdId: string
   link?: string | null
   currentPrice: number | null
