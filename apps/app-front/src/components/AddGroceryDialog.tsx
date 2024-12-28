@@ -2,19 +2,13 @@ import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { Button } from "./ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog"
-import { isErrored } from "stream"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
+import { Frequency } from "../types/grocery"
 
 interface AddGroceryFormData {
   name: string
   category: string
-  purchaseFrequency: 'MONTHLY' | 'QUARTERLY' | 'ANNUALLY'
+  purchaseFrequency: Frequency
   householdId: string
   link?: string
   price?: number
@@ -27,7 +21,7 @@ export function AddGroceryDialog() {
 
   const { mutate: addGrocery } = useMutation({
     mutationFn: async (data: AddGroceryFormData) => {
-      const response = await axios.post("http://localhost:3000/groceries", data)
+      const response = await axios.post("http://192.168.0.170:8080/groceries", data)
       return response.data
     },
     onSuccess: () => {
@@ -36,10 +30,16 @@ export function AddGroceryDialog() {
     },
   })
 
-  const { data: categories, isLoading, isError } = useQuery({
+  const {
+    data: categories,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await axios.get<string[]>("http://localhost:3000/groceries/categories/8c698634-d2f9-4d04-b439-c370a93bf48c")
+      const response = await axios.get<string[]>(
+        "http://192.168.0.170:8080/groceries/categories/8c698634-d2f9-4d04-b439-c370a93bf48c",
+      )
       return response.data
     },
   })
@@ -47,15 +47,15 @@ export function AddGroceryDialog() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    
+
     addGrocery({
       name: formData.get("name") as string,
       category: formData.get("category") as string,
-      purchaseFrequency: formData.get("purchaseFrequency") as 'MONTHLY' | 'QUARTERLY' | 'ANNUALLY',
-      householdId: "8c698634-d2f9-4d04-b439-c370a93bf48c", 
-      link: formData.get("link") as string || undefined,
+      purchaseFrequency: formData.get("purchaseFrequency") as "MONTHLY" | "QUARTERLY" | "ANNUALLY",
+      householdId: "8c698634-d2f9-4d04-b439-c370a93bf48c",
+      link: (formData.get("link") as string) || undefined,
       price: formData.get("price") ? parseFloat(formData.get("price") as string) : undefined,
-      store: formData.get("store") as string || undefined,
+      store: (formData.get("store") as string) || undefined,
     })
   }
 
@@ -80,7 +80,7 @@ export function AddGroceryDialog() {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
             />
           </div>
-          
+
           <div className="grid gap-2">
             <label htmlFor="category" className="text-sm font-medium">
               Category
@@ -92,7 +92,9 @@ export function AddGroceryDialog() {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
             >
               {categories?.map((category) => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
           </div>
