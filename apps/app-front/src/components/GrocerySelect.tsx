@@ -2,12 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { Combobox } from "@/components/ui/combobox"
 import { useToast } from "@/components/hooks/use-toast"
+import { Frequency } from "@/types/grocery"
 
 interface Grocery {
   id: string
   name: string
   category: string
-  purchaseFrequency: string
+  purchaseFrequency: Frequency
   householdId: string
   link?: string
 }
@@ -25,7 +26,9 @@ export const GrocerySelect: React.FC<GrocerySelectProps> = ({ onSelect }) => {
   const { data: groceries, isLoading: isLoadingGroceries } = useQuery({
     queryKey: ["groceries"],
     queryFn: async () => {
-      const response = await axios.get<Grocery[]>(`http://localhost:3000/groceries/${HOUSEHOLD_ID}`)
+      const response = await axios.get<Grocery[]>(
+        `http://192.168.0.170:8080/groceries/${HOUSEHOLD_ID}`,
+      )
       return response.data
     },
   })
@@ -34,7 +37,7 @@ export const GrocerySelect: React.FC<GrocerySelectProps> = ({ onSelect }) => {
     queryKey: ["currentShoppingList"],
     queryFn: async () => {
       const response = await axios.get(
-        `http://localhost:3000/groceries/shopping-list/${HOUSEHOLD_ID}/current`,
+        `http://192.168.0.170:8080/groceries/shopping-list/${HOUSEHOLD_ID}/current`,
       )
       return response.data
     },
@@ -43,7 +46,7 @@ export const GrocerySelect: React.FC<GrocerySelectProps> = ({ onSelect }) => {
   const addToShoppingList = useMutation({
     mutationFn: async (groceryId: string) => {
       console.log("Adding to shopping list", groceryId)
-      const response = await axios.post("http://localhost:3000/groceries/add-to-shopping-list", {
+      const response = await axios.post("http://192.168.0.170:8080/groceries/add-to-shopping-list", {
         groceryId,
         householdId: HOUSEHOLD_ID,
         quantity: 1,
