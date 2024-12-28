@@ -1,7 +1,6 @@
 import axios from "axios"
-console.log(import.meta.env.VITE_BASE_API_URL)
+
 export const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API_URL,
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
 })
-
