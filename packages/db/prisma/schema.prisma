@@ -61,6 +61,7 @@ enum Frequency {
   MONTHLY
   QUARTERLY
   ANNUALLY
+  ONE_TIME
 }
 
 model ShoppingList {

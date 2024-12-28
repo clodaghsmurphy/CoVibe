@@ -5,6 +5,7 @@ export enum Frequency {
   MONTHLY = 'MONTHLY',
   QUARTERLY = 'QUARTERLY',
   ANNUALLY = 'ANNUALLY',
+  ONE_TIME = 'ONE_TIME',
 }
 
 export class CreateGroceryDto {
