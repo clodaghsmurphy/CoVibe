@@ -1,7 +1,11 @@
 import { Controller, Get, Post, Body, Param, Delete, Patch } from "@nestjs/common"
 import { GroceryService } from "./grocery.service"
 import { ApiTags, ApiOperation, ApiParam } from "@nestjs/swagger"
-import { AddToShoppingListDto, DeleteShoppingListItemDto, UpdateShoppingListItemQuantityDto } from "./grocery.dto"
+import {
+  AddToShoppingListDto,
+  DeleteShoppingListItemDto,
+  UpdateShoppingListItemQuantityDto,
+} from "./grocery.dto"
 import { CreateGroceryDto } from "./grocery.dto"
 import { Frequency } from "@covibe/db"
 
@@ -29,74 +33,67 @@ export class GroceryController {
         store: currentPriceRecord?.store || null,
       }
     })
-    
   }
 
-  @Get('categories/:householdId')
-  @ApiOperation({ summary: 'Get all distinct categories for a household' })
-  @ApiParam({ name: 'householdId', required: true })
-  async getCategories(@Param('householdId') householdId: string) {
-    return this.groceryService.getCategories(householdId);
+  @Get("categories/:householdId")
+  @ApiOperation({ summary: "Get all distinct categories for a household" })
+  @ApiParam({ name: "householdId", required: true })
+  async getCategories(@Param("householdId") householdId: string) {
+    return this.groceryService.getCategories(householdId)
   }
 
-  @Get('shopping-list/:householdId/current')
-  @ApiOperation({ summary: 'Get current month shopping list' })
-  @ApiParam({ name: 'householdId', required: true })
-  async getCurrentMonthShoppingList(@Param('householdId') householdId: string) {
-    return this.groceryService.getCurrentMonthShoppingList(householdId);
+  @Get("shopping-list/:householdId/current")
+  @ApiOperation({ summary: "Get current month shopping list" })
+  @ApiParam({ name: "householdId", required: true })
+  async getCurrentMonthShoppingList(@Param("householdId") householdId: string) {
+    return this.groceryService.getCurrentMonthShoppingList(householdId)
   }
 
-  @Get('shopping-list/:householdId/:shoppingListId/total')
-  @ApiOperation({ summary: 'Get shopping list total price' })
-  @ApiParam({ name: 'householdId', required: true })
-  @ApiParam({ name: 'shoppingListId', required: true })
-  async getShoppingListTotal(
-    @Param('householdId') householdId: string,
-    @Param('shoppingListId') shoppingListId: string,
-  ) {
-    return this.groceryService.getShoppingListTotal(householdId, shoppingListId);
+  @Get("shopping-list/:householdId")
+  @ApiOperation({ summary: "Get shopping list total price" })
+  async getShoppingList(@Param("householdId") householdId: string) {
+    return this.groceryService.getShoppingListById(householdId)
+  }
+
+  @Get("shopping-list/:shoppingListId/total")
+  @ApiOperation({ summary: "Get shopping list total price" })
+  @ApiParam({ name: "shoppingListId", required: true })
+  async getShoppingListTotal(@Param("shoppingListId") shoppingListId: string) {
+    return this.groceryService.getShoppingListTotal(shoppingListId)
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new grocery item' })
+  @ApiOperation({ summary: "Create a new grocery item" })
   async createGrocery(@Body() createGroceryDto: CreateGroceryDto) {
-    return this.groceryService.create(createGroceryDto);
+    return this.groceryService.create(createGroceryDto)
   }
 
-  @Post('shopping-list')
-  @ApiOperation({ summary: 'Add a grocery to shopping list' })
+  @Post("shopping-list")
+  @ApiOperation({ summary: "Add a grocery to shopping list" })
   async addToShoppingList(@Body() data: AddToShoppingListDto) {
-    return this.groceryService.addToShoppingList(data);
+    return this.groceryService.addToShoppingList(data)
   }
 
-  @Post('add-to-shopping-list')
+  @Post("add-to-shopping-list")
   async addToShoppingListOld(@Body() body: AddToShoppingListDto) {
-    const { groceryId, householdId, quantity, notes } = body;
-    return this.groceryService.addItemToShoppingList(
-      groceryId,
-      householdId,
-      quantity,
-      notes
-    );
+    const { groceryId, householdId, quantity, notes } = body
+    return this.groceryService.addItemToShoppingList(groceryId, householdId, quantity, notes)
   }
 
-  @Patch('shopping-list-item/quantity')
-  @ApiOperation({ summary: 'Update shopping list item quantity' })
+  @Patch("shopping-list-item/quantity")
+  @ApiOperation({ summary: "Update shopping list item quantity" })
   async updateShoppingListItemQuantity(@Body() updateDto: UpdateShoppingListItemQuantityDto) {
     return this.groceryService.updateShoppingListItemQuantity(
       updateDto.itemId,
       updateDto.householdId,
-      updateDto.quantity
-    );
+      updateDto.quantity,
+    )
   }
 
-  @Delete('shopping-list-item')
-  @ApiOperation({ summary: 'Delete an item from shopping list' })
+  @Delete("shopping-list-item")
+  @ApiOperation({ summary: "Delete an item from shopping list" })
   async deleteShoppingListItem(@Body() deleteDto: DeleteShoppingListItemDto) {
-    return this.groceryService.deleteShoppingListItem(
-      deleteDto.itemId,
-      deleteDto.householdId
-    );
+    return this.groceryService.deleteShoppingListItem(deleteDto.itemId, deleteDto.householdId)
   }
 }
 

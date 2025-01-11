@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 import { httpClient } from "@/api/httpClient/axios"
 import { toast } from "@/components/hooks/use-toast"
 import { queryClient } from "@/api/queryClient/queryClient"
-import { ShoppingList } from "@/components/ShoppingList"
+import { ShoppingList } from "@/api/groceries/useGetCurrentShoppingList"
 
 export const useDeleteShoppingListItem = (householdId: string, shoppingList: ShoppingList) => {
   return useMutation({

@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../prisma/prisma.service"
-import { AddToShoppingListDto } from "./grocery.dto";
-import { CreateGroceryDto } from "./grocery.dto";
+import { AddToShoppingListDto } from "./grocery.dto"
+import { CreateGroceryDto } from "./grocery.dto"
 
 @Injectable()
 export class GroceryService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(householdId: string) {
-    console.log('householdId', householdId);
+    console.log("householdId", householdId)
     return this.prisma.grocery.findMany({
       where: {
         householdId,
@@ -28,25 +28,25 @@ export class GroceryService {
     groceryId: string,
     householdId: string,
     quantity: number = 1,
-    notes?: string
+    notes?: string,
   ) {
     // Get the current month's start and end dates
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
-    console.log(startOfMonth, endOfMonth);
+    console.log(startOfMonth, endOfMonth)
     // Try to find existing shopping list for this month
     let shoppingList = await this.prisma.shoppingList.findFirst({
       where: {
         householdId,
         month: {
           gte: startOfMonth,
-          lte: endOfMonth
-        }
-      }
-    });
-    console.log(shoppingList);
+          lte: endOfMonth,
+        },
+      },
+    })
+    console.log(shoppingList)
 
     // If no shopping list exists for this month, create one
     if (!shoppingList) {
@@ -54,16 +54,16 @@ export class GroceryService {
         data: {
           householdId,
           month: startOfMonth,
-        }
-      });
+        },
+      })
     }
 
     const grocery = await this.prisma.grocery.findUnique({
       where: { id: groceryId },
-    });
+    })
 
     if (!grocery) {
-      throw new Error('Grocery item not found');
+      throw new Error("Grocery item not found")
     }
 
     return this.prisma.shoppingListItem.create({
@@ -71,21 +71,21 @@ export class GroceryService {
         shoppingListId: shoppingList.id,
         groceryId,
         quantity,
-        notes
+        notes,
       },
       include: {
-        grocery: true
-      }
-    });
+        grocery: true,
+      },
+    })
   }
 
   async create(createGroceryDto: CreateGroceryDto) {
-    const { price, store, ...groceryData } = createGroceryDto;
+    const { price, store, ...groceryData } = createGroceryDto
 
     // Create the grocery item
     const grocery = await this.prisma.grocery.create({
       data: groceryData,
-    });
+    })
 
     // If price is provided, create a price record
     if (price !== undefined) {
@@ -95,7 +95,7 @@ export class GroceryService {
           price,
           store,
         },
-      });
+      })
     }
 
     // Return the grocery with its price records
@@ -103,15 +103,15 @@ export class GroceryService {
       where: { id: grocery.id },
       include: {
         priceRecords: {
-          orderBy: { date: 'desc' },
+          orderBy: { date: "desc" },
           take: 1,
         },
       },
-    });
+    })
   }
 
   async createGrocery(createGroceryDto: CreateGroceryDto) {
-    return this.create(createGroceryDto);
+    return this.create(createGroceryDto)
   }
 
   async getCategories(householdId: string) {
@@ -122,17 +122,17 @@ export class GroceryService {
       select: {
         category: true,
       },
-      distinct: ['category'],
-    });
+      distinct: ["category"],
+    })
 
-    console.log(distinctCategories);
-    return distinctCategories.map(item => item.category);
+    console.log(distinctCategories)
+    return distinctCategories.map((item) => item.category)
   }
 
   async addToShoppingList(data: AddToShoppingListDto) {
-    const currentDate = new Date();
-    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const currentDate = new Date()
+    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
 
     // Find or create shopping list for current month
     let shoppingList = await this.prisma.shoppingList.findFirst({
@@ -143,7 +143,7 @@ export class GroceryService {
           lte: endOfMonth,
         },
       },
-    });
+    })
 
     if (!shoppingList) {
       shoppingList = await this.prisma.shoppingList.create({
@@ -151,7 +151,7 @@ export class GroceryService {
           householdId: data.householdId,
           month: currentDate,
         },
-      });
+      })
     }
 
     // Add grocery to shopping list
@@ -164,15 +164,14 @@ export class GroceryService {
       include: {
         grocery: true,
       },
-    });
+    })
   }
 
   async getCurrentMonthShoppingList(householdId: string) {
-    const currentDate = new Date();
-    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const currentDate = new Date()
+    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
 
-    console.log(startOfMonth, endOfMonth);
     const shoppingList = await this.prisma.shoppingList.findFirst({
       where: {
         householdId,
@@ -188,9 +187,9 @@ export class GroceryService {
           },
         },
       },
-    });
+    })
 
-    return shoppingList;
+    return shoppingList
   }
 
   async deleteShoppingListItem(itemId: string, householdId: string) {
@@ -199,24 +198,24 @@ export class GroceryService {
       where: {
         id: itemId,
         shoppingList: {
-          householdId
-        }
-      }
-    });
+          householdId,
+        },
+      },
+    })
 
     if (!item) {
-      throw new Error('Shopping list item not found or does not belong to this household');
+      throw new Error("Shopping list item not found or does not belong to this household")
     }
 
     // Delete the item
     return this.prisma.shoppingListItem.delete({
       where: {
-        id: itemId
+        id: itemId,
       },
       include: {
-        grocery: true
-      }
-    });
+        grocery: true,
+      },
+    })
   }
 
   async updateShoppingListItemQuantity(itemId: string, householdId: string, quantity: number) {
@@ -225,33 +224,32 @@ export class GroceryService {
       where: {
         id: itemId,
         shoppingList: {
-          householdId
-        }
-      }
-    });
+          householdId,
+        },
+      },
+    })
 
     if (!item) {
-      throw new Error('Shopping list item not found or does not belong to this household');
+      throw new Error("Shopping list item not found or does not belong to this household")
     }
 
     return this.prisma.shoppingListItem.update({
       where: {
-        id: itemId
+        id: itemId,
       },
       data: {
-        quantity
+        quantity,
       },
       include: {
-        grocery: true
-      }
-    });
+        grocery: true,
+      },
+    })
   }
 
-  async getShoppingListTotal(householdId: string, shoppingListId: string) {
+  async getShoppingListTotal(shoppingListId: string) {
     const shoppingList = await this.prisma.shoppingList.findFirst({
       where: {
         id: shoppingListId,
-        householdId
       },
       include: {
         items: {
@@ -260,38 +258,46 @@ export class GroceryService {
               include: {
                 priceRecords: {
                   orderBy: {
-                    date: 'desc'
+                    date: "desc",
                   },
-                  take: 1
-                }
-              }
-            }
-          }
-        }
-      }
-    });
+                  take: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    })
 
     if (!shoppingList) {
-      throw new Error('Shopping list not found');
+      throw new Error("Shopping list not found")
     }
 
-    let total = 0;
-    const itemsWithoutPrice: string[] = [];
+    let total = 0
+    const itemsWithoutPrice: string[] = []
 
-    shoppingList.items.forEach(item => {
-      const latestPrice = item.grocery.priceRecords[0]?.price;
+    shoppingList.items.forEach((item) => {
+      const latestPrice = item.grocery.priceRecords[0]?.price
       if (latestPrice) {
-        total += latestPrice * item.quantity;
+        total += latestPrice * item.quantity
       } else {
-        itemsWithoutPrice.push(item.grocery.name);
+        itemsWithoutPrice.push(item.grocery.name)
       }
-    });
+    })
 
     return {
       total: parseFloat(total.toFixed(2)),
       itemsWithoutPrice,
       itemCount: shoppingList.items.length,
-      itemsWithPriceCount: shoppingList.items.length - itemsWithoutPrice.length
-    };
+      itemsWithPriceCount: shoppingList.items.length - itemsWithoutPrice.length,
+    }
+  }
+
+  async getShoppingListById(householdId: string) {
+    return this.prisma.shoppingList.findMany({
+      where: {
+        householdId,
+      },
+    })
   }
 }

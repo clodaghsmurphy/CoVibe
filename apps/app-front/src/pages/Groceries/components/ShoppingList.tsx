@@ -1,115 +1,41 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import axios from "axios"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "./ui/card"
-import { ScrollArea } from "./ui/scroll-area"
-import { Button } from "./ui/button"
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "../../../components/ui/card"
+import { ScrollArea } from "../../../components/ui/scroll-area"
+import { Button } from "../../../components/ui/button"
 import { X } from "lucide-react"
-import { useToast } from "@/components/hooks/use-toast"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
-import { Alert, AlertDescription } from "./ui/alert"
-
-interface ShoppingListItem {
-  id: string
-  quantity: number
-  grocery: {
-    id: string
-    name: string
-    category: string
-  }
-}
-
-interface ShoppingList {
-  id: string
-  month: string
-  items: ShoppingListItem[]
-}
-
-interface ShoppingListTotal {
-  total: number
-  itemsWithoutPrice: string[]
-  itemCount: number
-  itemsWithPriceCount: number
-}
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select"
+import { Alert, AlertDescription } from "../../../components/ui/alert"
+import { useGetShoppingListTotal } from "@/api/groceries/useGetShoppingListTotal"
+import { useDeleteShoppingListItem } from "@/api/groceries/useDeleteShoppingListItem"
+import { useGetCurrentShoppingList } from "@/api/groceries/useGetCurrentShoppingList"
+import { ShoppingListItem } from "@/api/groceries/useGetCurrentShoppingList"
+import { useUpdateShoppingListItemQuantity } from "@/api/groceries/useUpdateShoppingListItemQuantity"
 
 const HOUSEHOLD_ID = "8c698634-d2f9-4d04-b439-c370a93bf48c"
 const QUANTITY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 export function ShoppingList() {
-  const { toast } = useToast()
-  const queryClient = useQueryClient()
+ 
+  const { data: shoppingList, isLoading } = useGetCurrentShoppingList(HOUSEHOLD_ID)
 
-  const { data: shoppingList, isLoading } = useQuery<ShoppingList>({
-    queryKey: ["shopping-list"],
-    queryFn: async () => {
-      const response = await axios.get(
-        `http://localhost:3000/groceries/shopping-list/${HOUSEHOLD_ID}/current`,
-      )
-      return response.data
-    },
-  })
+  const { data: listTotal } = useGetShoppingListTotal(HOUSEHOLD_ID, shoppingList?.id)
 
-  const { data: listTotal } = useQuery<ShoppingListTotal>({
-    queryKey: ["shopping-list-total", shoppingList?.id],
-    enabled: !!shoppingList?.id,
-    queryFn: async () => {
-      const response = await axios.get(
-        `http://localhost:3000/groceries/shopping-list/${HOUSEHOLD_ID}/${shoppingList?.id}/total`,
-      )
-      return response.data
-    },
-  })
+  const updateQuantity = useUpdateShoppingListItemQuantity(HOUSEHOLD_ID, shoppingList?.id)
 
-  const updateQuantity = useMutation({
-    mutationFn: async ({ itemId, quantity }: { itemId: string; quantity: number }) => {
-      await axios.patch("http://localhost:3000/groceries/shopping-list-item/quantity", {
-        itemId,
-        householdId: HOUSEHOLD_ID,
-        quantity,
-      })
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["shopping-list"] })
-      await queryClient.invalidateQueries({ queryKey: ["shopping-list-total", shoppingList?.id] })
-      toast({
-        title: "Quantity Updated",
-        description: "Item quantity has been updated",
-      })
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update quantity",
-      })
-    },
-  })
-
-  const deleteItem = useMutation({
-    mutationFn: async (itemId: string) => {
-      await axios.delete("http://localhost:3000/groceries/shopping-list-item", {
-        data: {
-          itemId,
-          householdId: HOUSEHOLD_ID,
-        },
-      })
-    },
-    onSuccess: (_, itemId) => {
-      const itemName = shoppingList?.items.find((item) => item.id === itemId)?.grocery.name
-      queryClient.invalidateQueries({ queryKey: ["shopping-list"] })
-      queryClient.invalidateQueries({ queryKey: ["shopping-list-total", shoppingList?.id] })
-      toast({
-        title: "Item Removed",
-        description: `${itemName || "Item"} has been removed from your shopping list`,
-      })
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to remove item from shopping list",
-      })
-    },
-  })
+  const deleteItem = useDeleteShoppingListItem(HOUSEHOLD_ID, shoppingList)
 
   const handleQuantityChange = (itemId: string, quantity: string) => {
     updateQuantity.mutate({ itemId, quantity: parseInt(quantity) })
@@ -130,7 +56,6 @@ export function ShoppingList() {
     )
   }
 
-  // Group items by category
   const itemsByCategory = shoppingList.items.reduce(
     (acc, item) => {
       const category = item.grocery.category
