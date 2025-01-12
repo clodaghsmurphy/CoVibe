@@ -36,7 +36,7 @@ export class GroceryController {
   }
 
   @Get("categories/:householdId")
-  @ApiOperation({ summary: "Get all distinct categories for a household" })
+  @ApiOperation({ summary: "Gets all shopping lists for a household" })
   @ApiParam({ name: "householdId", required: true })
   async getCategories(@Param("householdId") householdId: string) {
     return this.groceryService.getCategories(householdId)
@@ -49,9 +49,10 @@ export class GroceryController {
     return this.groceryService.getCurrentMonthShoppingList(householdId)
   }
 
-  @Get("shopping-list/:householdId")
+  @Get("shopping-lists/:householdId")
   @ApiOperation({ summary: "Get shopping list total price" })
   async getShoppingList(@Param("householdId") householdId: string) {
+    console.log("getShoppingList", householdId)
     return this.groceryService.getShoppingListById(householdId)
   }
 

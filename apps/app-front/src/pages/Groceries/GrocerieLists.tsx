@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
 
 export function GroceriesLists() {
-  const shoppingListsQuery = useGetShoppingLists()
+  const shoppingListsQuery = useGetShoppingLists("8c698634-d2f9-4d04-b439-c370a93bf48c")
   return (
     <Card className="min-w-[400px]">
       <CardHeader>
@@ -23,7 +23,11 @@ export function GroceriesLists() {
           {(shoppingLists: ShoppingList[]) => (
             <>
               <p className="text-sm font-medium text-left text-muted">
-                {`${shoppingLists.length} purchases`}
+                {`Last purchase: ${
+                  shoppingLists[0].orderedAt
+                    ? shoppingLists[0].orderedAt.toLocaleDateString()
+                    : "-"
+                }`}
               </p>
               <div className="flex flex-col gap-2">
                 {shoppingLists.map((shoppingList) => (
