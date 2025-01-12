@@ -22,6 +22,7 @@
     "@tanstack/react-query": "^5.62.0",
     "axios": "^1.7.8",
     "cmdk": "1.0.0",
+    "dayjs": "^1.11.13",
     "httpclient": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

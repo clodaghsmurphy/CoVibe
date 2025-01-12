@@ -4,7 +4,7 @@ import { useGetShoppingLists } from "@/api/groceries/useGetShoppingLists"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
-
+import dayjs from "dayjs"
 export function GroceriesLists() {
   const shoppingListsQuery = useGetShoppingLists("8c698634-d2f9-4d04-b439-c370a93bf48c")
   return (
@@ -25,7 +25,7 @@ export function GroceriesLists() {
               <p className="text-sm font-medium text-left text-muted">
                 {`Last purchase: ${
                   shoppingLists[0].orderedAt
-                    ? shoppingLists[0].orderedAt.toLocaleDateString()
+                    ? dayjs(shoppingLists[0].orderedAt).format("DD/MM/YYYY")
                     : "-"
                 }`}
               </p>
