@@ -1,6 +1,5 @@
 import { httpClient } from "@/api/httpClient/axios"
 import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
 
 export interface ShoppingListItem {
   id: string
@@ -10,11 +9,13 @@ export interface ShoppingListItem {
     name: string
     category: string
   }
+  orderedAt?: Date
 }
 
 export interface ShoppingList {
   id: string
   month: string
+  orderedAt: Date | null
   items: ShoppingListItem[]
 }
 

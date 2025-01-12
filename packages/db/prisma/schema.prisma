@@ -72,6 +72,7 @@ model ShoppingList {
   items       ShoppingListItem[]
   status      ShoppingListStatus @default(PENDING)
   createdAt   DateTime           @default(now())
+  orderedAt   DateTime?
 }
 
 enum ShoppingListStatus {
