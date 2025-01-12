@@ -70,7 +70,13 @@ model ShoppingList {
   householdId String
   household   Household          @relation(fields: [householdId], references: [id])
   items       ShoppingListItem[]
+  status      ShoppingListStatus @default(PENDING)
   createdAt   DateTime           @default(now())
+}
+
+enum ShoppingListStatus {
+  PENDING
+  COMPLETED
 }
 
 model ShoppingListItem {
