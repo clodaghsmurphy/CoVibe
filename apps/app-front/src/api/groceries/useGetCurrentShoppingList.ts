@@ -10,11 +10,14 @@ export interface ShoppingListItem {
     category: string
   }
   orderedAt?: Date
+  createdAt: Date
 }
 
 export interface ShoppingList {
   id: string
   month: string
+  total: number
+  createdAt: Date
   orderedAt: Date | null
   items: ShoppingListItem[]
 }

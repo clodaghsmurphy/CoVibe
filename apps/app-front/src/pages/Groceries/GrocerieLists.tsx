@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
 import dayjs from "dayjs"
+import { GroceriesListCard } from "./components/GroceriesListCard"
+
 export function GroceriesLists() {
   const shoppingListsQuery = useGetShoppingLists("8c698634-d2f9-4d04-b439-c370a93bf48c")
   return (
@@ -31,7 +33,9 @@ export function GroceriesLists() {
               </p>
               <div className="flex flex-col gap-2">
                 {shoppingLists.map((shoppingList) => (
-                  <div key={shoppingList.id}>{shoppingList.month}</div>
+                  <div key={shoppingList.id}>
+                    <GroceriesListCard shoppingList={shoppingList} />
+                  </div>
                 ))}
               </div>
             </>

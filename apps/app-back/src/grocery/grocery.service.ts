@@ -298,6 +298,17 @@ export class GroceryService {
       where: {
         householdId,
       },
+      include: {
+        items: {
+          include: {
+            grocery: {
+              include: {
+                priceRecords: true,
+              },
+            },
+          },
+        },
+      },
     })
   }
 }
