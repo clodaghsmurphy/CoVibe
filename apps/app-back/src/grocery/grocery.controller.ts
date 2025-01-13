@@ -7,7 +7,7 @@ import {
   UpdateShoppingListItemQuantityDto,
 } from "./grocery.dto"
 import { CreateGroceryDto } from "./grocery.dto"
-import { Frequency } from "@covibe/db"
+import { Frequency, Prisma, ShoppingList, ShoppingListItem } from "@covibe/db"
 
 @ApiTags("groceries")
 @Controller("groceries")
@@ -52,8 +52,14 @@ export class GroceryController {
   @Get("shopping-lists/:householdId")
   @ApiOperation({ summary: "Get shopping list total price" })
   async getShoppingList(@Param("householdId") householdId: string) {
-    console.log("getShoppingList", householdId)
-    return this.groceryService.getShoppingListById(householdId)
+    const shoppingList = await this.groceryService.getShoppingListById(householdId)
+    return shoppingList.map((list) => ({
+      ...list,
+      total: list.items.reduce(
+        (acc: number, item) => acc + (item.grocery?.priceRecords?.[0]?.price ?? 0),
+        0,
+      ),
+    }))
   }
 
   @Get("shopping-list/:shoppingListId/total")
