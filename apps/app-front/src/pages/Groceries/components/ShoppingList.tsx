@@ -140,6 +140,9 @@ export function ShoppingList() {
           <div className="text-sm text-muted-foreground">
             Price available for {listTotal.itemsWithPriceCount} out of {listTotal.itemCount} items
           </div>
+          <Button variant="default" className="w-full">
+            View
+          </Button>
         </CardFooter>
       )}
     </Card>
