@@ -1,4 +1,3 @@
-
 import {
   Card,
   CardContent,
@@ -28,7 +27,6 @@ const HOUSEHOLD_ID = "8c698634-d2f9-4d04-b439-c370a93bf48c"
 const QUANTITY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 export function ShoppingList() {
- 
   const { data: shoppingList, isLoading } = useGetCurrentShoppingList(HOUSEHOLD_ID)
 
   const { data: listTotal } = useGetShoppingListTotal(HOUSEHOLD_ID, shoppingList?.id)
@@ -140,9 +138,7 @@ export function ShoppingList() {
           <div className="text-sm text-muted-foreground">
             Price available for {listTotal.itemsWithPriceCount} out of {listTotal.itemCount} items
           </div>
-          <Button variant="default" className="w-full">
-            View
-          </Button>
+          <Button className="w-full">View</Button>
         </CardFooter>
       )}
     </Card>

@@ -1,4 +1,5 @@
 import { ShoppingList } from "@/api/groceries/useGetCurrentShoppingList"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import dayjs from "dayjs"
 
@@ -8,7 +9,7 @@ interface GroceriesListCardProps {
 
 export const GroceriesListCard = ({ shoppingList }: GroceriesListCardProps) => {
   return (
-    <Card className="hover:bg-accent cursor-pointer transition-colors bg-white border-none">
+    <Card className=" cursor-pointer transition-colors bg-white border-none">
       <CardContent className="p-4">
         <div className="flex justify-between items-center">
           <div className="space-y-1">
@@ -23,6 +24,11 @@ export const GroceriesListCard = ({ shoppingList }: GroceriesListCardProps) => {
               })}
             </p>
           </div>
+        </div>
+        <div className="flex justify-end items-center">
+          <Button variant="default">
+            View
+          </Button>
         </div>
       </CardContent>
     </Card>
