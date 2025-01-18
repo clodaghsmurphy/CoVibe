@@ -13,7 +13,7 @@ export function GroceriesLists() {
   const createShoppingList = useCreateShoppingList()
 
   const handleCreateList = () => {
-    createShoppingList.mutate()
+    createShoppingList.mutate("8c698634-d2f9-4d04-b439-c370a93bf48c")
   }
 
   return (

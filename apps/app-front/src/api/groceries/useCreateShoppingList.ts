@@ -6,8 +6,10 @@ export function useCreateShoppingList() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async () => {
-      const response = await httpClient.post<ShoppingList>("/shopping-lists")
+    mutationFn: async (householdId: string) => {
+      const response = await httpClient.post<ShoppingList>(
+        `/groceries/shopping-lists/${householdId}`,
+      )
       return response.data
     },
     onSuccess: () => {

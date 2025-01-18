@@ -103,7 +103,7 @@ export class GroceryController {
     return this.groceryService.deleteShoppingListItem(deleteDto.itemId, deleteDto.householdId)
   }
 
-  @Post("shopping-lists")
+  @Post("shopping-lists/:householdId")
   @ApiOperation({ summary: "Create a new shopping list" })
   @ApiParam({ name: "householdId", required: true })
   async createShoppingList(@Param("householdId") householdId: string) {

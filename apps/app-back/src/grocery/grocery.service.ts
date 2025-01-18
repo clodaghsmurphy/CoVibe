@@ -46,7 +46,6 @@ export class GroceryService {
         },
       },
     })
-    console.log(shoppingList)
 
     // If no shopping list exists for this month, create one
     if (!shoppingList) {
