@@ -311,4 +311,13 @@ export class GroceryService {
       },
     })
   }
+
+  async createShoppingList(householdId: string) {
+    return this.prisma.shoppingList.create({
+      data: {
+        householdId,
+        month: new Date(),
+      },
+    })
+  }
 }
