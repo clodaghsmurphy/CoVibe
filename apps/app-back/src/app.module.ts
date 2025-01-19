@@ -14,12 +14,6 @@ import { PrismaModule } from "./prisma/prisma.module"
       isGlobal: true,
     }),
     AuthModule,
-    RouterModule.register([
-      {
-        path: "users",
-        module: AuthModule,
-      },
-    ]),
     GroceryModule,
     PrismaModule,
   ],

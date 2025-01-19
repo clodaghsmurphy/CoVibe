@@ -1,6 +1,7 @@
 import { NestFactory } from "@nestjs/core"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { AppModule } from "./app.module"
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -18,6 +19,7 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
+  app.useGlobalPipes(new ValidationPipe())
   const PORT = process.env.PORT || 8080
   const openApiConfig = new DocumentBuilder()
     .setTitle("CoVibe")
