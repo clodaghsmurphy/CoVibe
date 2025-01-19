@@ -19,6 +19,7 @@ model User {
   email      String      @unique
   password   String
   name       String
+  refreshTokens RefreshToken[]
   households Household[] @relation("HouseholdMembers")
 }
 
@@ -88,4 +89,17 @@ model ShoppingListItem {
   grocery        Grocery      @relation(fields: [groceryId], references: [id])
   quantity       Int // Number of this grocery item to buy
   notes          String? // Optional notes for the item
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  token       String   @unique
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  isRevoked   Boolean  @default(false)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
