@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post } from "@nestjs/common"
-import { ApiTags } from "@nestjs/swagger"
+import { Body, Controller, Get, Post, Req, UnauthorizedException } from "@nestjs/common"
+import { ApiResponse, ApiTags } from "@nestjs/swagger"
 import { AuthService } from "./auth.service"
 import { CreateUserDto } from "~/auth/dto/create-user.dto"
 import { LoginDto } from "~/auth/dto/login.dto"
+import { Request } from "express"
 
 @Controller("auth")
 @ApiTags("Auth")
@@ -22,5 +23,18 @@ export class AuthController {
   @Post("login")
   login(@Body() loginDto: LoginDto) {
     return this.service.login(loginDto)
+  }
+
+  @Post("verify-token")
+  @ApiResponse({
+    status: 200,
+    description: "Token is valid",
+  })
+  verifyToken(@Req() req: Request) {
+    const refreshToken = req.cookies["refresh_token"]
+    if (!refreshToken) {
+      throw new UnauthorizedException("Invalid token")
+    }
+    return this.service.verifyToken(refreshToken)
   }
 }
