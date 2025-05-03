@@ -67,18 +67,8 @@ export class AuthService {
     })
 
     return {
-      cookie: {
-        name: "refresh_token",
-        value: refreshToken.token,
-        options: {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-          path: "/",
-          expires: refreshToken.expiresAt,
-        },
-      },
       user: result,
+      refresh_token: refreshToken.token,
     }
   }
 
