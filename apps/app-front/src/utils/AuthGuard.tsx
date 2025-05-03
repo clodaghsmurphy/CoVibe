@@ -1,21 +1,22 @@
-import { useAuth } from "@/store/auth-context"
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+// import { useAuth } from "@/store/auth-context"
+import { AuthContext } from "@/store/auth-context"
+import { useSelector } from "@xstate/react"
+import { Outlet, useNavigate } from "react-router-dom"
 
 export const AuthGuard = () => {
   const navigate = useNavigate()
-  const { isAuthenticated, isLoading } = useAuth()
+  const actorRef = AuthContext.useActorRef()
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login")
+  const { isAuthenticated, isLoading } = useSelector(actorRef, (state) => {
+    return {
+      isAuthenticated: state.context.isAuthenticated,
+      isLoading: state.context.isLoading,
     }
-  }, [isAuthenticated, navigate])
+  })
 
-  if (isLoading) {
-    return <div>Loading...</div>
+  if (!isAuthenticated && !isLoading) {
+    navigate("/login")
   }
 
-  return isAuthenticated
+  return <Outlet />
 }
-
