@@ -17,7 +17,7 @@ export function GroceriesLists() {
   }
 
   return (
-    <Card className="min-w-[400px]">
+    <Card className="min-w-[300px] sm:min-w-[400px] md:min-w-[500px] lg:min-w-[600px]">
       <CardHeader>
         <div className="flex flex-row justify-between">
           <CardTitle className="text-lg">Groceries</CardTitle>
