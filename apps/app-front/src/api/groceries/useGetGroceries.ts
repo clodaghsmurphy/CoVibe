@@ -22,8 +22,6 @@ export const useGetGroceries = (householdId: string) => {
     queryKey: ["groceries"],
     queryFn: async () => {
       const response = await httpClient.get(`/groceries/${householdId}`)
-      console.log("httpClient.getUri()", httpClient.getUri())
-
       return response.data
     },
   })
