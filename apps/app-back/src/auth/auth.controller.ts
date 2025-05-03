@@ -45,4 +45,15 @@ export class AuthController {
 
     return this.service.verifyToken(refreshToken)
   }
+
+  @Post("logout")
+  async logout(@Req() req: Request, @Res() res: Response) {
+    const refreshToken = req.cookies["refresh_token"]
+    if (!refreshToken) {
+      throw new UnauthorizedException("Invalid token")
+    }
+    await this.service.logout(refreshToken)
+    res.clearCookie("refresh_token")
+    return res.status(200).json({ message: "Logged out successfully" })
+  }
 }
