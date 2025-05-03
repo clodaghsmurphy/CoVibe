@@ -1,13 +1,16 @@
+import { useDeleteShoppingList } from "@/api/groceries/useDeleteShoppingList"
 import { ShoppingList } from "@/api/groceries/useGetCurrentShoppingList"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import dayjs from "dayjs"
+import { TrashIcon } from "lucide-react"
 
 interface GroceriesListCardProps {
   shoppingList: ShoppingList
 }
 
 export const GroceriesListCard = ({ shoppingList }: GroceriesListCardProps) => {
+  const { mutate: deleteShoppingList } = useDeleteShoppingList()
   return (
     <Card className=" cursor-pointer transition-colors bg-white border-none">
       <CardContent className="p-4">
@@ -25,9 +28,10 @@ export const GroceriesListCard = ({ shoppingList }: GroceriesListCardProps) => {
             </p>
           </div>
         </div>
-        <div className="flex justify-end items-center">
-          <Button variant="default">
-            View
+        <div className="flex justify-end items-center gap-2">
+          <Button variant="default">View</Button>
+          <Button variant="ghost" onClick={() => deleteShoppingList(shoppingList.id)}>
+            <TrashIcon className="w-4 h-4" />
           </Button>
         </div>
       </CardContent>

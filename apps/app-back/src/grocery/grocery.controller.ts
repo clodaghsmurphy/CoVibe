@@ -103,6 +103,13 @@ export class GroceryController {
     return this.groceryService.deleteShoppingListItem(deleteDto.itemId, deleteDto.householdId)
   }
 
+  @Delete("shopping-list/:shoppingListId")
+  @ApiOperation({ summary: "Delete a shopping list" })
+  @ApiParam({ name: "shoppingListId", required: true })
+  async deleteShoppingList(@Param("shoppingListId") shoppingListId: string) {
+    return this.groceryService.deleteShoppingList(shoppingListId)
+  }
+
   @Post("shopping-lists/:householdId")
   @ApiOperation({ summary: "Create a new shopping list" })
   @ApiParam({ name: "householdId", required: true })

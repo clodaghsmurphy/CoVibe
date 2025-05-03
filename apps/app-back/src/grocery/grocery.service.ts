@@ -318,4 +318,10 @@ export class GroceryService {
       },
     })
   }
+
+  async deleteShoppingList(shoppingListId: string) {
+    return this.prisma.shoppingList.delete({
+      where: { id: shoppingListId },
+    })
+  }
 }
