@@ -29,10 +29,13 @@ export class GroceryService {
     quantity: number = 1,
     notes?: string,
   ) {
+    // Get the current month's start and end dates
     const now = new Date()
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
+    console.log(startOfMonth, endOfMonth)
+    // Try to find existing shopping list for this month
     let shoppingList = await this.prisma.shoppingList.findFirst({
       where: {
         householdId,
@@ -43,6 +46,7 @@ export class GroceryService {
       },
     })
 
+    // If no shopping list exists for this month, create one
     if (!shoppingList) {
       shoppingList = await this.prisma.shoppingList.create({
         data: {
