@@ -6,6 +6,8 @@ import { AppRouter } from "./Router"
 import { AuthContext } from "./store/auth-context"
 import { getQueryClient } from "./lib/query-client"
 import { AppSidebar } from "./layout/AppSideBar"
+import { Toaster } from "@/components/ui/toaster"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 function App() {
   const queryClient = getQueryClient()
 
@@ -13,16 +15,18 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <AuthContext.Provider>
+          <Toaster />
           <div className="min-h-screen bg-background w-full">
             <SidebarProvider>
               <AppSidebar />
-                <SidebarTrigger />
+              <SidebarTrigger />
               <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 <AppRouter />
               </main>
             </SidebarProvider>
           </div>
         </AuthContext.Provider>
+      <ReactQueryDevtools initialIsOpen={false} />
       </Router>
     </QueryClientProvider>
   )
