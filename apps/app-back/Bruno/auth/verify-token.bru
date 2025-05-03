@@ -1,0 +1,17 @@
+meta {
+  name: verify-token
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{BASE_URL}}/auth/verify-token
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "token": "{{refresh_token}}"
+  }
+}
