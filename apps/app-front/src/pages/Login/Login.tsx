@@ -1,32 +1,19 @@
 import { useState } from "react"
-import { useAuth } from "@/store/auth-context"
 import { httpClient } from "@/api/httpClient/axios"
 import { useNavigate } from "react-router-dom"
-
+import { useSelector } from "@xstate/react"
+import { AuthContext } from "@/store/auth-context"
 export const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const { authenticate } = useAuth()
   const navigate = useNavigate()
-
+  const actorRef = AuthContext.useActorRef()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
-    try {
-      const response = await httpClient.post("/auth/login", {
-        email,
-        password,
-      })
-
-      if (response.data.user) {
-        authenticate(response.data.user)
-        navigate("/groceries")
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed")
-    }
+    actorRef.send({ type: "LOGIN", input: { email, password } })
   }
 
   return (
@@ -49,7 +36,7 @@ export const Login = () => {
               id="email"
               type="email"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -63,7 +50,7 @@ export const Login = () => {
               id="password"
               type="password"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
