@@ -13,6 +13,7 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { AuthContext } from "@/store/auth-context"
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu"
 import {
   BellIcon,
@@ -32,7 +33,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-
+  const actorRef = AuthContext.useActorRef()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -87,7 +88,11 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                actorRef.send({ type: "LOGOUT" })
+              }}
+            >
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

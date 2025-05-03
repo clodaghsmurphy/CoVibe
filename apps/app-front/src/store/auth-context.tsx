@@ -3,7 +3,6 @@ import { createActorContext } from "@xstate/react"
 import { assign, createActor, createMachine, fromCallback, fromPromise, setup } from "xstate"
 
 const login = fromPromise(async ({ input }: { input: { email: string; password: string } }) => {
-  console.log("login", input)
   const response = await httpClient.post("/auth/login", input)
   return response.data
 })
@@ -32,15 +31,10 @@ export const authMachine = setup({
     isAuthenticated: false,
     isLoading: false,
     logout: () => {},
-    login: ({ input }: { input: { email: string; password: string } }) => {},
-    checkAuth: () => {},
-  },
-  on: {
-    LOGIN: {
-      actions: assign({
-        isLoading: true,
-      }),
+    login: ({ input }: { input: { email: string; password: string } }) => {
+      console.log("login", input)
     },
+    checkAuth: () => {},
   },
   states: {
     checkingAuth: {
@@ -49,7 +43,9 @@ export const authMachine = setup({
         onDone: {
           target: "authenticated",
           actions: assign({
-            user: ({ event }) => event.output,
+            user: ({ event }) => {
+              return event.output
+            },
             isAuthenticated: true,
           }),
         },
@@ -68,11 +64,16 @@ export const authMachine = setup({
     loggingIn: {
       invoke: {
         src: login,
-        input: ({ event }) => event,
+        input: ({ event }) => {
+          return { email: event.email, password: event.password }
+        },
         onDone: {
           target: "authenticated",
           actions: assign({
-            user: ({ event }) => event.output,
+            user: ({ event }) => {
+              console.log("user", event.output)
+              return event.output
+            },
             isAuthenticated: true,
           }),
         },
@@ -99,7 +100,7 @@ export const authMachine = setup({
           }),
         },
         onError: {
-          target: "authenticated", // Optional: stay authenticated on logout failure
+          target: "authenticated",
         },
       },
     },
