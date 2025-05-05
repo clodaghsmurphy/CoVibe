@@ -4,9 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Combobox } from "@/components/ui/combobox"
 import { Grocery, useGetGroceries } from "@/api/groceries/useGetGroceries"
 import { QueryHandler } from "@/components/utils/queryHandler"
-export function Groceries() {
-  const groceriesQuery = useGetGroceries("8c698634-d2f9-4d04-b439-c370a93bf48c")
+import { AuthContext } from "@/store/auth-context"
+import { useSelector } from "@xstate/react"
 
+export function Groceries() {
+  const actorRef = AuthContext.useActorRef()
+  const { user } = useSelector(actorRef, (state) => {
+    return {
+      user: state.context.user,
+    }
+  })
+  const groceriesQuery = useGetGroceries(user?.householdId)
   return (
     <QueryHandler<Grocery[]> query={groceriesQuery}>
       {(groceries: Grocery[]) => (
