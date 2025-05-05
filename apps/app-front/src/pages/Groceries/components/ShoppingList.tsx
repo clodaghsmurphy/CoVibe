@@ -19,28 +19,34 @@ import {
 import { Alert, AlertDescription } from "../../../components/ui/alert"
 import { useGetShoppingListTotal } from "@/api/groceries/useGetShoppingListTotal"
 import { useDeleteShoppingListItem } from "@/api/groceries/useDeleteShoppingListItem"
-import { useGetCurrentShoppingList } from "@/api/groceries/useGetCurrentShoppingList"
 import { ShoppingListItem } from "@/api/groceries/useGetCurrentShoppingList"
 import { useUpdateShoppingListItemQuantity } from "@/api/groceries/useUpdateShoppingListItemQuantity"
-
-const HOUSEHOLD_ID = "8c698634-d2f9-4d04-b439-c370a93bf48c"
+import { useGetShoppingListById } from "@/api/groceries/useGetShoppingListById"
+import { useNavigate, useParams } from "react-router-dom"
 const QUANTITY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 export function ShoppingList() {
-  const { data: shoppingList, isLoading } = useGetCurrentShoppingList(HOUSEHOLD_ID)
+  const params = useParams()
+  const shoppingListId = params.shoppingListId
+  if (!shoppingListId) {
+    return <div>No shopping list id</div>
+  }
+  const { data: shoppingList, isLoading, error } = useGetShoppingListById(shoppingListId)
+  const { data: listTotal } = useGetShoppingListTotal(shoppingListId)
+  const navigate = useNavigate()
+  const updateQuantity = useUpdateShoppingListItemQuantity(shoppingListId, shoppingListId)
 
-  const { data: listTotal } = useGetShoppingListTotal(HOUSEHOLD_ID, shoppingList?.id)
-
-  const updateQuantity = useUpdateShoppingListItemQuantity(HOUSEHOLD_ID, shoppingList?.id)
-
-  const deleteItem = useDeleteShoppingListItem(HOUSEHOLD_ID, shoppingList)
-
+  const deleteItem = useDeleteShoppingListItem(shoppingListId, shoppingListId)
   const handleQuantityChange = (itemId: string, quantity: string) => {
     updateQuantity.mutate({ itemId, quantity: parseInt(quantity) })
   }
 
   if (isLoading) {
     return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>
   }
 
   if (!shoppingList) {
@@ -53,6 +59,7 @@ export function ShoppingList() {
       </Card>
     )
   }
+
 
   const itemsByCategory = shoppingList.items.reduce(
     (acc, item) => {
@@ -79,10 +86,11 @@ export function ShoppingList() {
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[400px] pr-4">
-          {Object.entries(itemsByCategory).map(([category, items]) => (
-            <div key={category} className="mb-6">
-              <h3 className="mb-2 text-lg font-semibold">{category}</h3>
-              <div className="space-y-2">
+          {Object.entries(itemsByCategory).length > 0 ? (
+            Object.entries(itemsByCategory).map(([category, items]) => (
+              <div key={category} className="mb-6">
+                <h3 className="mb-2 text-lg font-semibold">{category}</h3>
+                <div className="space-y-2">
                 {items.map((item) => (
                   <div
                     key={item.id}
@@ -118,7 +126,12 @@ export function ShoppingList() {
                 ))}
               </div>
             </div>
-          ))}
+            ))
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-muted-foreground">No items in this shopping list</p>
+            </div>
+          )}
         </ScrollArea>
       </CardContent>
       {listTotal && (
@@ -138,7 +151,12 @@ export function ShoppingList() {
           <div className="text-sm text-muted-foreground">
             Price available for {listTotal.itemsWithPriceCount} out of {listTotal.itemCount} items
           </div>
-          <Button className="w-full">View</Button>
+          <Button
+            className="w-full"
+            onClick={() => navigate(`/groceries/shopping-list/${shoppingListId}`)}
+          >
+            View
+          </Button>
         </CardFooter>
       )}
     </Card>
