@@ -52,7 +52,7 @@ export class GroceryController {
   @Get("shopping-lists/:householdId")
   @ApiOperation({ summary: "Get shopping list total price" })
   async getShoppingList(@Param("householdId") householdId: string) {
-    const shoppingList = await this.groceryService.getShoppingListById(householdId)
+    const shoppingList = await this.groceryService.getShoppingListByHouseholdId(householdId)
     return shoppingList.map((list) => ({
       ...list,
       total: list.items.reduce(
@@ -60,6 +60,13 @@ export class GroceryController {
         0,
       ),
     }))
+  }
+
+  @Get("shopping-list/:shoppingListId")
+  @ApiOperation({ summary: "Get shopping list by id" })
+  @ApiParam({ name: "shoppingListId", required: true })
+  async getShoppingListById(@Param("shoppingListId") shoppingListId: string) {
+    return this.groceryService.getShoppingListById(shoppingListId)
   }
 
   @Get("shopping-list/:shoppingListId/total")

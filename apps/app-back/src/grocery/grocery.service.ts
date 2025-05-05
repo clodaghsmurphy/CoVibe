@@ -291,7 +291,7 @@ export class GroceryService {
     }
   }
 
-  async getShoppingListById(householdId: string) {
+  async getShoppingListByHouseholdId(householdId: string) {
     return this.prisma.shoppingList.findMany({
       where: {
         householdId,
@@ -322,6 +322,19 @@ export class GroceryService {
   async deleteShoppingList(shoppingListId: string) {
     return this.prisma.shoppingList.delete({
       where: { id: shoppingListId },
+    })
+  }
+
+  async getShoppingListById(shoppingListId: string) {
+    return this.prisma.shoppingList.findUnique({
+      where: { id: shoppingListId },
+      include: {
+        items: {
+          include: {
+            grocery: true,
+          },
+        },
+      },
     })
   }
 }
