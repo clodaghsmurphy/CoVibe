@@ -19,15 +19,15 @@ function App() {
           <div className="min-h-screen bg-background w-full">
             <SidebarProvider>
               <AppSidebar />
-              <SidebarTrigger />
-              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+              <SidebarTrigger className="absolute top-2 left-2" />
+              <main className="mx-auto py-6 sm:px-6 lg:px-8">
                 <AppRouter />
               </main>
             </SidebarProvider>
           </div>
         </AuthContext.Provider>
-      <ReactQueryDevtools initialIsOpen={false} />
       </Router>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }
