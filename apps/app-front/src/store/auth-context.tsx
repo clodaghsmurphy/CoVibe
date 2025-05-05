@@ -1,6 +1,6 @@
 import { httpClient } from "@/api/httpClient/axios"
 import { createActorContext } from "@xstate/react"
-import { assign, createActor, createMachine, fromCallback, fromPromise, setup } from "xstate"
+import { assign, fromPromise, setup } from "xstate"
 
 const login = fromPromise(async ({ input }: { input: { email: string; password: string } }) => {
   const response = await httpClient.post("/auth/login", input)
@@ -71,7 +71,6 @@ export const authMachine = setup({
           target: "authenticated",
           actions: assign({
             user: ({ event }) => {
-              console.log("user", event.output)
               return event.output
             },
             isAuthenticated: true,
